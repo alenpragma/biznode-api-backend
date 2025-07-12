@@ -22,7 +22,6 @@ class DepositController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-
         $wallet = UserWalletData::where('user_id', $user->id)->select('wallet_address')->first();
         if($wallet){
             return response()->json([
@@ -104,10 +103,19 @@ class DepositController extends Controller
     public function history(Request $request)
     {
         $user = $request->user();
-        $history = Deposit::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        $history = Deposit::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate(10);
+        try {
+            $this->checkDeposit($request);
+        }catch (\Exception $exception){
+
+        }
         return response()->json([
             'success' => true,
-            'data' => $history,
+            'data' => $history->items(),
+            'total' => $history->total(),
+            'current' => $history->currentPage(),
+            'next' => $history->nextPageUrl(),
+            'previous' => $history->previousPageUrl(),
         ]);
     }
 
