@@ -10,7 +10,9 @@ use App\Models\UserWalletData;
 use App\Service\TransactionService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Exception;
 
 class DepositController extends Controller
 {
@@ -35,56 +37,72 @@ class DepositController extends Controller
         ]);
     }
 
+
     public function checkDeposit(Request $request)
     {
         $user = $request->user();
 
+        // Get user wallet address
         $wallet = UserWalletData::where('user_id', $user->id)->select('wallet_address')->first();
 
-        if (!$wallet) {
+        if (!$wallet || empty($wallet->wallet_address)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Wallet address not found for user.'
             ], 404);
         }
 
-        $client = new Client();
-
         try {
+            $client = new Client();
             $response = $client->get('https://web3.blockmaster.info/api/get-transactions', [
                 'query' => [
                     'address' => $wallet->wallet_address,
                 ],
             ]);
 
-            $responseData = json_decode($response->getBody()->getContents());
+            $transactions = json_decode($response->getBody()->getContents());
 
-            if (!is_array($responseData)) {
+            if (!is_array($transactions)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Invalid response format from API.'
-                ]);
+                    'message' => 'Invalid response format from transaction API.',
+                ], 500);
             }
 
-            foreach ($responseData as $data) {
-                // Make sure required fields exist
-                if (!isset($data->hash, $data->value, $data->message)) {
-                    continue;
-                }
+            DB::beginTransaction();
 
-                // Skip if transaction already exists
-                $exists = Deposit::where('transaction_id', $data->hash)->exists();
+            foreach ($transactions as $tx) {
+                if (
+                    isset($tx->hash, $tx->value, $tx->message, $tx->to) &&
+                    $tx->message === 'OK' &&
+                    strtolower($tx->to) === strtolower($wallet->wallet_address)
+                ) {
+                    $alreadyExists = Deposit::where('transaction_id', $tx->hash)->exists();
 
-                if (!$exists && $data->message === 'OK' && $data->to == $wallet->wallet_address) {
-                    $deposit = new Deposit();
-                    $deposit->transaction_id = $data->hash;
-                    $deposit->amount = number_format((float) $data->value, 8, '.', '');
-                    $deposit->user_id = $user->id;
-                    $user->wallet += $data->value;
-                    $user->save();
-                    $deposit->save();
+                    if (!$alreadyExists) {
+                        $amount = number_format((float) $tx->value, 8, '.', '');
+
+                        // Create Deposit
+                        $deposit = new Deposit();
+                        $deposit->transaction_id = $tx->hash;
+                        $deposit->amount = $amount;
+                        $deposit->user_id = $user->id;
+                        $deposit->status = 'approved'; // optionally 'pending'
+                        $deposit->remark = 'Auto deposit from blockchain';
+                        $deposit->type = 'crypto'; // optional if your schema uses it
+                        $deposit->save();
+
+                        // Update user's wallet balance
+                        $user->wallet += $tx->value;
+                        $user->save();
+
+                        // Optional logging
+                        // Log::info("Deposit added for user {$user->id}, tx: {$tx->hash}");
+                    }
                 }
             }
+
+            DB::commit();
 
             return response()->json([
                 'success' => true,
@@ -92,12 +110,18 @@ class DepositController extends Controller
             ]);
 
         } catch (Exception $e) {
+            DB::rollBack();
+
+            // Optional logging
+            // Log::error("Deposit check failed: " . $e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
-            ]);
+                'message' => 'Error while checking deposit: ' . $e->getMessage(),
+            ], 500);
         }
     }
+
 
 
     public function history(Request $request)
