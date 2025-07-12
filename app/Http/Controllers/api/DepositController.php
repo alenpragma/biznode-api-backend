@@ -10,6 +10,7 @@ use App\Models\UserWalletData;
 use App\Service\TransactionService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class DepositController extends Controller
 {
@@ -81,6 +82,7 @@ class DepositController extends Controller
                     $deposit->amount = number_format((float) $data->value, 8, '.', '');
                     $deposit->user_id = $user->id;
                     $user->wallet += $data->value;
+                    $user->save();
                     $deposit->save();
                 }
             }
@@ -98,6 +100,16 @@ class DepositController extends Controller
         }
     }
 
+
+    public function history(Request $request)
+    {
+        $user = $request->user();
+        $history = Deposit::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $history,
+        ]);
+    }
 
 
     public function StoreUSD(Request $request)

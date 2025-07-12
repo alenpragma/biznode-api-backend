@@ -30,9 +30,10 @@ Route::prefix('user')->middleware(['auth:sanctum','verified'])->group(function (
     Route::post('convert', [ConvertController::class, 'convert']);
 
     //deposit
-    Route::post('deposit', [\App\Http\Controllers\api\DepositController::class, 'addDeposit']);
+    Route::post('deposit', [DepositController::class, 'addDeposit']);
     Route::get('deposit', [DepositController::class, 'index']);
     Route::get('deposit-check', [DepositController::class, 'checkDeposit']);
+    Route::get('deposit-history', [DepositController::class, 'history']);
 });
 
 //EmailSendSystem
