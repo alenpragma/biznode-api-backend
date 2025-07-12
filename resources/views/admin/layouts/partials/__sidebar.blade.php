@@ -90,7 +90,7 @@
                 </li>
                 <!-- KYC -->
                 @php
-                    use App\Models\Kyc;
+                    use App\Models\kyc;
                     $pendingCount = Kyc::where('status', 'pending')->count();
                 @endphp
 
