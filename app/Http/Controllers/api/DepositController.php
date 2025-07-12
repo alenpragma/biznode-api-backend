@@ -87,9 +87,9 @@ class DepositController extends Controller
                         $deposit->transaction_id = $tx->hash;
                         $deposit->amount = $amount;
                         $deposit->user_id = $user->id;
-                        $deposit->status = 'approved'; // optionally 'pending'
+                        //$deposit->status = 'approved'; // optionally 'pending'
                         //$deposit->remark = 'Auto deposit from blockchain';
-                        $deposit->type = 'crypto'; // optional if your schema uses it
+                        //$deposit->type = 'crypto'; // optional if your schema uses it
                         $deposit->save();
 
                         // Update user's wallet balance
