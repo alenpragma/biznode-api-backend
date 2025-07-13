@@ -44,7 +44,7 @@ class DepositController extends Controller
         $user = $request->user();
 
         // Get user wallet address
-        $wallet = UserWalletData::where('user_id', $user->id)->select('wallet_address')->first();
+        $wallet = UserWalletData::where('user_id', $user->id)->select('wallet_address','meta')->first();
 
         if (!$wallet || empty($wallet->wallet_address)) {
             return response()->json([
