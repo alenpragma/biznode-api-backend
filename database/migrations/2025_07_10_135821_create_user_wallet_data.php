@@ -17,8 +17,8 @@ return new class extends Migration
             $table->longText('meta')->unique();
             $table->string('wallet_address');
             $table->string('currency')->default('USD');
-            $table->integer('total_deposit')->default(0);
-            $table->integer('total_withdraw')->default(0);
+            $table->integer('amount')->default(0);
+            $table->integer('bnb')->default(0);
             $table->boolean('status')->default(false);
             $table->timestamps();
         });

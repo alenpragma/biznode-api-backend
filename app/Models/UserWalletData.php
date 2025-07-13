@@ -11,9 +11,9 @@ class UserWalletData extends Model
         'user_id',
         'wallet_address',
         'currency',
-        'total_deposit',
+        'amount',
         'meta',
-        'total_withdraw',
+        'bnb',
         'status',
     ];
 }

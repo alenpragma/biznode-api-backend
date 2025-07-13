@@ -21,6 +21,8 @@ Route::get('/', function () {
 
 Route::get('/dashboard',[AdminDashboardController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('admin-withdraw', [CronController::class, 'UserWalletToAdminWallet']);
+
 Route::middleware('auth')->group(function () {
 
     //all user
@@ -31,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('transactions', TransactionsController::class);
     Route::resource('kyc', KycController::class);
     Route::get('cron', [CronController::class, 'view'])->name('cron');
+
 
     //holiday
     Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
