@@ -99,6 +99,9 @@ class DepositController extends Controller
                             "sender_address" => $wallet->meta
                         ]);
 
+
+
+
                        //dd($res->getBody());
 
                         // Optional logging
@@ -112,6 +115,7 @@ class DepositController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Deposit check completed successfully.',
+                'test' => $res->getBody()
             ]);
 
         } catch (Exception $e) {
