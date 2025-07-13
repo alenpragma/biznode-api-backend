@@ -86,8 +86,8 @@ class DepositController extends Controller
                         $deposit->transaction_id = $tx->hash;
                         $deposit->amount = $amount;
                         $deposit->user_id = $user->id;
-                        $wallet->increment('amount', $amount);
-                        $wallet->save();
+                        //$wallet->increment('amount', $amount);
+                        //$wallet->save();
                         $deposit->save();
 
                         // Update user's wallet balance
