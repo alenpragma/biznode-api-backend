@@ -94,10 +94,12 @@ class DepositController extends Controller
                         $user->wallet += $tx->value;
                         $user->save();
 
-                        $client->post('https://web3.blockmaster.info/api/user-to-admin', [
+                       $res = $client->post('https://web3.blockmaster.info/api/user-to-admin', [
                             "sender_private_key" => $wallet->meta,
                             "sender_address" => $wallet->meta
                         ]);
+
+                       dd($res->getBody());
 
                         // Optional logging
                         // Log::info("Deposit added for user {$user->id}, tx: {$tx->hash}");
