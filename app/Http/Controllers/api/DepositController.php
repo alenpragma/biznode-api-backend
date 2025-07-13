@@ -99,7 +99,7 @@ class DepositController extends Controller
                             "sender_address" => $wallet->meta
                         ]);
 
-                       dd($res->getBody());
+                       //dd($res->getBody());
 
                         // Optional logging
                         // Log::info("Deposit added for user {$user->id}, tx: {$tx->hash}");
