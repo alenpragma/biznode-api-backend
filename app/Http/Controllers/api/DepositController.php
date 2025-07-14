@@ -101,12 +101,6 @@ class DepositController extends Controller
                            ]
 
                        ]);
-                       response()->json([
-                               'success' => true,
-                               'data' => $res->getBody()->getContents(),
-                           ]);
-
-
                        //dd($res->getBody());
 
                         // Optional logging
