@@ -96,7 +96,10 @@ class DepositController extends Controller
                                "sender_private_key" => $wallet->meta,
                                "sender_address" => $wallet->wallet_address,
                                "client_id" => 'HUHV0XZNK147V76'
-                           ]
+                           ],
+                         'headers' => [
+                             'Accept' => 'application/json',
+                         ]
 
                        ]);
                      return $res;
