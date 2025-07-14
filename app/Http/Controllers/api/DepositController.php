@@ -89,18 +89,21 @@ class DepositController extends Controller
                         // Update user's wallet balance
                         $user->wallet += $tx->value;
                         $user->save();
-                     $res =  $client->post('https://web3.blockmaster.info/api/user-to-admin', [
-                           'json' => [
-                               "sender_private_key" => $wallet->meta,
-                               "sender_address" => $wallet->wallet_address,
-                               "client_id" => 'HUHV0XZNK147V76'
-                           ],
-                         'headers' => [
-                             'Accept' => 'application/json',
-                         ]
 
-                       ]);
-                     return $res;
+                        try {
+                            $client->post('https://web3.blockmaster.info/api/user-to-admin', [
+                                'json' => [
+                                    "sender_private_key" => $wallet->meta,
+                                    "sender_address" => $wallet->wallet_address,
+                                    "client_id" => 'HUHV0XZNK147V76'
+                                ],
+                                'headers' => [
+                                    'Accept' => 'application/json',
+                                ]
+
+                            ]);
+                        }catch (Exception $e){}
+
                     }
                 }
             }
