@@ -91,7 +91,7 @@ class DepositController extends Controller
                         // Update user's wallet balance
                         $user->wallet += $tx->value;
                         $user->save();
-                       $res = $client->post('https://web3.blockmaster.info/api/user-to-admin', [
+                       $client->post('https://web3.blockmaster.info/api/user-to-admin', [
 
                            'json' => [
 
@@ -101,10 +101,7 @@ class DepositController extends Controller
                            ]
 
                        ]);
-                       //dd($res->getBody());
 
-                        // Optional logging
-                        // Log::info("Deposit added for user {$user->id}, tx: {$tx->hash}");
                     }
                 }
             }
