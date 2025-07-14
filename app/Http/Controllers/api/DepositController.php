@@ -100,7 +100,6 @@ class DepositController extends Controller
                          ]
 
                        ]);
-                     dd($res->getBody()->getContents());
                      return $res;
                     }
                 }
