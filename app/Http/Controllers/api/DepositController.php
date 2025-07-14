@@ -80,6 +80,7 @@ class DepositController extends Controller
                     $alreadyExists = Deposit::where('transaction_id', $tx->hash)->exists();
 
                     if (!$alreadyExists) {
+                        dd($tx);
                         $amount = number_format((float) $tx->value, 8, '.', '');
                         // Create Deposit
                         $deposit = new Deposit();
