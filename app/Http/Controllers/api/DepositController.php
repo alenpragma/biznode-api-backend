@@ -101,7 +101,7 @@ class DepositController extends Controller
                            ]
 
                        ]);
-                       return response()->json([
+                       response()->json([
                                'success' => true,
                                'data' => $res->getBody()->getContents(),
                            ]);
