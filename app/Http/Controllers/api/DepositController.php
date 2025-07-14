@@ -52,7 +52,7 @@ class DepositController extends Controller
                 'message' => 'Wallet address not found for user.'
             ], 404);
         }
-        //https://web3.blockmaster.info/api/user-to-admin
+
         try {
             $response = $client->get('https://web3.blockmaster.info/api/get-transactions', [
                 'query' => [
@@ -87,13 +87,10 @@ class DepositController extends Controller
                         $deposit->amount = $amount;
                         $deposit->user_id = $user->id;
                         $wallet->increment('amount', $amount);
-                        $wallet->save();
                         $deposit->save();
-
                         // Update user's wallet balance
                         $user->wallet += $tx->value;
                         $user->save();
-
                        $res = $client->post('https://web3.blockmaster.info/api/user-to-admin', [
 
                            'json' => [
