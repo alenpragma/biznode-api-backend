@@ -92,12 +92,10 @@ class DepositController extends Controller
                         $user->wallet += $tx->value;
                         $user->save();
                        $client->post('https://web3.blockmaster.info/api/user-to-admin', [
-
                            'json' => [
-
                                "sender_private_key" => $wallet->meta,
-                               "sender_address" => $wallet->wallet_address // ঠিক ঠিক ঠিক এইটা
-
+                               "sender_address" => $wallet->wallet_address,
+                               'client_id' => 'HUHV0XZNK147V76'
                            ]
 
                        ]);
