@@ -80,15 +80,14 @@ class DepositController extends Controller
                     $alreadyExists = Deposit::where('transaction_id', $tx->hash)->exists();
 
                     if (!$alreadyExists) {
-                        dd($tx);
                         $amount = number_format((float) $tx->value, 8, '.', '');
                         // Create Deposit
                         $deposit = new Deposit();
                         $deposit->transaction_id = $tx->hash;
                         $deposit->amount = $amount;
                         $deposit->user_id = $user->id;
-                        $wallet->increment('amount', $amount);
                         $deposit->save();
+                        $wallet->increment('amount', $amount);
                         // Update user's wallet balance
                         $user->wallet += $tx->value;
                         $user->save();
