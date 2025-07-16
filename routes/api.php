@@ -2,7 +2,6 @@
 
 
 use App\Http\Controllers\api\AuthController;
-use App\Http\Controllers\api\AutoDepositController;
 use App\Http\Controllers\api\ConvertController;
 use App\Http\Controllers\api\DepositController;
 use App\Http\Controllers\api\PackagesController;
@@ -42,7 +41,7 @@ Route::prefix('user')->middleware(['throttle:3,1'])->group(function () {
     Route::get('/verify-email/{id}/{hash}',[EmailController::class,'verify'])->middleware(['signed'])->name('verification.verify');
 });
 
-Route::post('paymentHooks', [AutoDepositController::class, 'PaymentHooks']);
+
 //cron
 Route::post('forget-password-send-mail',[AuthController::class, 'ForgotPasswordSendEmail']);
 Route::post('reset-password',[AuthController::class, 'ResetPassword']);
