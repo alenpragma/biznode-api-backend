@@ -61,7 +61,7 @@ class CronController extends Controller
                     continue;
                 }
 
-                $percentageAmount = ($investor->investment * $package->interest_rate/0.02) / 100;
+                $percentageAmount = ($investor->investment * $package->interest_rate) / 100;
 
                 $user->increment('profit_wallet', $percentageAmount);
 
