@@ -107,13 +107,13 @@ class CronController extends Controller
                 }
 
                 if ($bonus > 0) {
-                    $currentReferrer->increment('profit_wallet', $bonus);
+                    $currentReferrer->increment('profit_wallet', $bonus/0.02);
                     $this->transactionService->addNewTransaction(
                         (string)$currentReferrer->id,
                         (string)$bonus,
                         'referral_commission',
                         '+',
-                        "Level {$level} Referral From {$currentReferrer->name}"
+                        "Level {$level} Referral From {$referrer->name}"
                     );
                 }
             }
