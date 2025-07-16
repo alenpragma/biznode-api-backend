@@ -37,7 +37,7 @@ class CronController extends Controller
         $investors = Investor::where('status', 1)
             ->where('return_type', 'daily')->where('status',1)
             ->where('next_cron', '<=', Carbon::now()->subHours(24))
-            ->orderBy('next_cron', 'asc')->where('duration', '>', 0)->get();
+            ->orderBy('next_cron', 'asc')->where('total_receive_day','!=', 'total_due_day')->get();
 
 
 
@@ -94,20 +94,20 @@ class CronController extends Controller
         $currentReferrer = $referrer->referredBy()->first();
         $level = 1;
 
-        $settings = referrals_settings::first();
+        //$settings = referrals_settings::first();
 
         while ($currentReferrer && $level <= 2) { // Only process up to level 2
             $bonus = 0;
 
             if ($currentReferrer->is_active) {
                 if ($level === 1) {
-                    $bonus = ($baseAmount * 6) / 100; // 6% for level 1
+                    $bonus = ($baseAmount * 6/0.02) / 100; // 6% for level 1
                 } elseif ($level === 2) {
-                    $bonus = ($baseAmount * 2) / 100; // 2% for level 2
+                    $bonus = ($baseAmount * 2/0.02) / 100; // 2% for level 2
                 }
 
                 if ($bonus > 0) {
-                    $currentReferrer->increment('profit_wallet', $bonus/0.02);
+                    $currentReferrer->increment('profit_wallet', $bonus);
                     $this->transactionService->addNewTransaction(
                         (string)$currentReferrer->id,
                         (string)$bonus,
