@@ -61,7 +61,7 @@ class CronController extends Controller
                     continue;
                 }
 
-                $percentageAmount = ($investor->investment * $package->interest_rate) / 100;
+                $percentageAmount = ($investor->investment * $package->interest_rate/0.02) / 100;
 
                 $user->increment('profit_wallet', $percentageAmount);
 
@@ -101,9 +101,9 @@ class CronController extends Controller
 
             if ($currentReferrer->is_active) {
                 if ($level === 1) {
-                    $bonus = ($baseAmount * 6/0.02) / 100; // 6% for level 1
+                    $bonus = ($baseAmount * 6) / 100; // 6% for level 1
                 } elseif ($level === 2) {
-                    $bonus = ($baseAmount * 2/0.02) / 100; // 2% for level 2
+                    $bonus = ($baseAmount * 2) / 100; // 2% for level 2
                 }
 
                 if ($bonus > 0) {
