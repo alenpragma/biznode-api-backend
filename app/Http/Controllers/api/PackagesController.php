@@ -79,7 +79,9 @@ class PackagesController extends Controller
                 $package->price,
                 "package_purchased",
                 "-",
-                "$packageName Package Purchased"
+                "$packageName Package Purchased",
+                "Completed",
+                "USDT"
             );
 
             Investor::create([
@@ -95,7 +97,7 @@ class PackagesController extends Controller
                 'last_cron' => now(),
             ]);
 
-            $invest_level = referrals_settings::first();
+            //$invest_level = referrals_settings::first();
 
             DB::commit();
 
@@ -112,7 +114,7 @@ class PackagesController extends Controller
                         "$bonus",
                         "referral_commission",
                         "+",
-                        "Level 1 Referral From $user->name"
+                        "Level 1 Referral From $user->name",
                     );
                 }
 

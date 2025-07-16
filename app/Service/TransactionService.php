@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
 
 class TransactionService
 {
-    public function addNewTransaction($userID,$amount,$remark,$type,$details,$status ='Completed'):bool
+    public function addNewTransaction($userID,$amount,$remark,$type,$details,$status ='Completed',$currency = 'BIZT'):bool
     {
         try {
             Transactions::create([
@@ -17,6 +17,7 @@ class TransactionService
                 'amount' => $amount,
                 'status' => $status,
                 'details' => $details,
+                'currency' => $currency,
             ]);
             return true;
         }catch (\Exception $exception){

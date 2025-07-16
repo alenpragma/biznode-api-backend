@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('type',['-','+']);
             $table->enum('status',['Pending','Paid','Completed','Rejected']);
             $table->string('details')->nullable();
+            $table->enum('currency',['USDT','BIZT'])->default('USDT');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

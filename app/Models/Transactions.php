@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transactions extends Model
 {
     protected $table = 'transactions';
-    protected $fillable = ['transaction_id', 'user_id', 'amount', 'remark','type','status','details'];
+    protected $fillable = ['transaction_id', 'user_id', 'amount', 'remark','type','status','details','currency'];
 
     public static function generateTransactionId(): string
     {

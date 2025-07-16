@@ -37,8 +37,9 @@ class CronController extends Controller
         $investors = Investor::where('status', 1)
             ->where('return_type', 'daily')->where('status',1)
             ->where('next_cron', '<=', Carbon::now()->subHours(24))
-            ->orderBy('next_cron', 'asc')
-            ->get();
+            ->orderBy('next_cron', 'asc')->where('duration', '>', 0)->get();
+
+
 
         if ($investors->isEmpty()) {
             return 'No Investor Found for Cron Job';
@@ -91,22 +92,19 @@ class CronController extends Controller
     private function addReferralBonus(User $referrer, $baseAmount): void
     {
         $currentReferrer = $referrer->referredBy()->first();
-
         $level = 1;
 
         $settings = referrals_settings::first();
 
-        while ($currentReferrer && $level <= 3) {
+        while ($currentReferrer && $level <= 2) { // Only process up to level 2
             $bonus = 0;
 
             if ($currentReferrer->is_active) {
-                 if ($level === 1) {
-                    $bonus = ($baseAmount * $settings->roi_level_1) / 100;
+                if ($level === 1) {
+                    $bonus = ($baseAmount * 6) / 100; // 6% for level 1
                 } elseif ($level === 2) {
-                    $bonus = ($baseAmount * $settings->roi_level_2) / 100;
-                }elseif ($level === 3) {
-                     $bonus = ($baseAmount * $settings->roi_level_1) / 100;
-                 }
+                    $bonus = ($baseAmount * 2) / 100; // 2% for level 2
+                }
 
                 if ($bonus > 0) {
                     $currentReferrer->increment('profit_wallet', $bonus);
@@ -115,7 +113,7 @@ class CronController extends Controller
                         (string)$bonus,
                         'referral_commission',
                         '+',
-                        "Level {$level} Referral From $currentReferrer->name"
+                        "Level {$level} Referral From {$currentReferrer->name}"
                     );
                 }
             }
@@ -124,6 +122,7 @@ class CronController extends Controller
             $level++;
         }
     }
+
 
     public function view()
     {
