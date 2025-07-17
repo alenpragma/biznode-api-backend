@@ -26,84 +26,39 @@
 
             <table class="table table-striped table-hover mt-3">
                 <thead class="thead-dark">
-                <tr>
-                    <th>#</th>
-                    <th>TrxID:</th>
-                    <th>User</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                    <th>Created At</th>
-                    <th>Action</th>
-                </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>TrxID:</th>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Amount</th>
+                        {{-- <th>Status</th> --}}
+                        <th>Created At</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @forelse ($deposits as $index => $deposit)
-                    <tr>
-                        <td>{{ $index + $deposits->firstItem() }}</td>
-                        <td>{{ $deposit->details }}</td>
-                        <td>{{ $deposit->user->name ?? 'N/A' }}</td>
-                        <td>${{$deposit->amount}}</td>
-
-                        <td>
-                            <span class="badge
-                                @if($deposit->status == 'Pending') badge-warning
-                                @elseif($deposit->status == 'Rejected') badge-danger
-                                @else badge-success @endif">
-                                {{ ucfirst($deposit->status) }}
-                            </span>
-                        </td>
-                        <td>{{ $deposit->created_at?->format('Y-m-d H:i') }}</td>
-                       @if($deposit->status == 'Pending')
-                            <td>
-                                <button type="button"
-                                        class="btn btn-sm btn-primary"
-                                        data-toggle="modal"
-                                        data-target="#actionModal{{ $deposit->id }}">
-                                    <i class="fas fa-edit"></i> Manage
-                                </button>
-                            </td>
-                       @endif
-                    </tr>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="actionModal{{ $deposit->id }}" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <form method="POST" action="{{ route('deposit.update', $deposit->id) }}">
-                                @csrf
-                                @method('PUT')
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Update Status</h5>
-                                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="hidden" name="id" value="{{ $deposit->id }}">
-                                        <div class="form-group">
-                                            <label>Transaction ID</label>
-                                            <input type="text" class="form-control" value="{{ $deposit->details }}" readonly>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Status</label>
-                                            <select name="status" class="form-control">
-                                                <option value="pending" {{ $deposit->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                                <option value="rejected" {{ $deposit->status == 'rejected' ? 'selected' : '' }}>Rejected</option>
-                                                <option value="completed" {{ $deposit->status == 'completed' ? 'selected' : '' }}>Completed</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-success">Update</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                @empty
-                    <tr>
-                        <td colspan="8" class="text-center">No withdrawals found.</td>
-                    </tr>
-                @endforelse
+                    @forelse ($deposits as $index => $deposit)
+                        <tr>
+                            <td>{{ $index + $deposits->firstItem() }}</td>
+                            <td>{{ $deposit->transaction_id }}</td>
+                            <td>{{ $deposit->user->name ?? 'N/A' }}</td>
+                            <td>{{ $deposit->user->email ?? 'N/A' }}</td>
+                            <td>${{ $deposit->amount }}</td>
+                            {{-- <td>
+                                <span class="badge
+                                    @if($deposit->status == '0') badge-warning
+                                    @elseif($deposit->status == '1') badge-danger
+                                    @else badge-success @endif">
+                                    {{ ucfirst($deposit->status) }}
+                                </span>
+                            </td> --}}
+                            <td>{{ $deposit->created_at?->format('Y-m-d H:i') }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center">No Deposits found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
 

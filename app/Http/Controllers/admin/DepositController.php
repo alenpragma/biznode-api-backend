@@ -2,19 +2,26 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Transactions;
 use App\Models\User;
+use App\Models\Deposit;
+use App\Models\Transactions;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class DepositController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $deposits = Transactions::where('remark','=','deposit')->paginate(10);
+        $query = Deposit::with('user')->latest();
+
+    if ($request->has('filter') && $request->filter) {
+        $query->where('status', $request->filter);
+    }
+
+    $deposits = $query->paginate(10);
         return view('admin.pages.deposit.index', compact('deposits'));
     }
 

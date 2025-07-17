@@ -8,4 +8,9 @@ class Deposit extends Model
 {
     protected $table = 'deposits';
     protected $fillable = ['user_id', 'amount', 'transaction_id'];
+
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
 }
