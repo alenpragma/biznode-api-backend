@@ -34,9 +34,9 @@ class ConvertController extends Controller
             ]);
         }else{
             $user->profit_wallet -= $amount;
-            $this->transactionService->addNewTransaction("$user->id", "$amount", "convert","-","-$amount Convert profit_wallet to Main Wallet");
+            $this->transactionService->addNewTransaction("$user->id", "$amount", "convert","-","-$amount Convert BIZT  to USDT Wallet");
             $user->wallet += $amount*0.02;
-            $this->transactionService->addNewTransaction("$user->id","$amount","convert","+","+$amount Converted profit_wallet to Main Wallet");
+            $this->transactionService->addNewTransaction("$user->id","$amount","convert","+","+$amount Converted BIZT to Main USDT Wallet");
             $user->save();
             Cache::forget('admin_dashboard_data');
             return response()->json([
