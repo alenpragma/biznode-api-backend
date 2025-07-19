@@ -9,6 +9,7 @@ use App\Http\Controllers\api\TransactionsController;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\CronController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\UserNetworkController;
 use Illuminate\Support\Facades\Route;
 
 //user
@@ -33,6 +34,9 @@ Route::prefix('user')->middleware(['auth:sanctum','verified'])->group(function (
     Route::get('deposit', [DepositController::class, 'index']);
     Route::get('deposit-check', [DepositController::class, 'checkDeposit']);
     Route::get('deposit-history', [DepositController::class, 'history']);
+
+    //network
+    Route::get('network',[UserNetworkController::class, 'index']);
 });
 
 //EmailSendSystem
