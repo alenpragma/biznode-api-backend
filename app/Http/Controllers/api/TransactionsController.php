@@ -73,7 +73,7 @@ class TransactionsController extends Controller
 
         $user = $request->user();
         $amount = $validatedData['amount'];
-        $amount = $amount + ($amount * $charge / 100);
+        $amount = $amount - ($amount * $charge / 100);
         $wallet = $validatedData['wallet'];
 
 
@@ -90,7 +90,7 @@ class TransactionsController extends Controller
                 "withdrawal",
                 "-",
                 "$wallet", 'Pending');
-            $user->wallet -= $amount;
+            $user->wallet -= $validatedData['amount'];
             $user->save();
             return response()->json([
                 'status' => true,
