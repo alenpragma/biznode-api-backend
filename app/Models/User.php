@@ -84,6 +84,21 @@ class User extends Authenticatable implements MustVerifyEmail
         return $code;
     }
 
+    public function totalLevel1InvestmentAmount(): float
+    {
+        return $this->referrals()
+            ->whereHas('investor')
+            ->with('investor')
+            ->get()
+            ->sum(fn($user) => (float) $user->investor->investment);
+    }
+
+    public function countLevel2Users(): int
+    {
+        $level1Referrals = $this->referrals()->pluck('id');
+
+        return self::whereIn('refer_by', $level1Referrals)->count();
+    }
 
 
     public function investor()
