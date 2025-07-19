@@ -17,7 +17,7 @@ class UserNetworkController extends Controller
                 ],
                 'Level2' => [
                     'total' => $user->countLevel2Users(),
-                    'totalInvestment' => $user->totalTeamInvestment(),
+                    'totalInvestment' => $user->totalLevel2InvestmentAmount(),
                 ]
             ]
         ]);
