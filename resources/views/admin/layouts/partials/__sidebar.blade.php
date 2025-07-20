@@ -5,7 +5,7 @@
         <!-- Logo Header -->
         <div class="logo-header" data-background-color="dark">
             <a href="/admin/dashboard" class="logo">
-                <img src="/logo.png" alt="App Name" class="navbar-brand" height="20">
+                <img src="{{ asset('public/storage/' . $generalSettings->logo) }}" alt="App Name" class="navbar-brand" height="50">
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
@@ -132,6 +132,7 @@
                             <li><a href="/holidays"><span class="sub-item {{ Str::contains(request()->path(), 'holidays') ? 'active' : '' }}">Holidays Setting</span></a></li>
                             <li><a href="/withdraws/settings"><span class="sub-item">Withdraws Settings</span></a></li>
                             <li><a href="/ReferralsSettings"><span class="sub-item">Referral Settings</span></a></li>
+                            <li><a href="{{route('admin.general.settings')}}"><span class="sub-item">General Settings</span></a></li>
                         </ul>
                     </div>
                 </li>

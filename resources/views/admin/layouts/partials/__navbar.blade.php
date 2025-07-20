@@ -22,7 +22,7 @@
 							<li class="nav-item topbar-user dropdown hidden-caret">
 								<a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
 									<div class="avatar-sm">
-										<img src="https://yeldo-front-puce.vercel.app/_next/static/media/logo.beb988fc.png" alt="..." class="avatar-img rounded-circle">
+										<img src="{{ asset('public/storage/' . $generalSettings->favicon) }}" alt="..." class="avatar-img rounded-circle">
 									</div>
 									<span class="profile-username">
 										<span class="op-7">Hi,</span> <span class="fw-bold">{{ auth()->user()->name ?? "not fpund" }}</span>
@@ -32,10 +32,10 @@
 									<div class="dropdown-user-scroll scrollbar-outer">
 										<li>
 											<div class="user-box">
-{{--												<div class="avatar-lg"><img src="{{ Storage::url($generalSettings->favicon) }}" alt="image profile" class="avatar-img rounded"></div>--}}
+												<div class="avatar-lg"><img src="{{ Storage::url($generalSettings->favicon) }}" alt="image profile" class="avatar-img rounded"></div>
 												<div class="u-text">
 													<h4>{{ auth()->user()->name }}</h4>
-{{--													<p class="text-muted">{{ auth('admin')->user()->email }}</p><a href="{{route('admin.profile')}}" class="btn btn-xs btn-secondary btn-sm">View Profile</a>--}}
+													{{-- <p class="text-muted">{{ auth()->user()->email }}</p><a href="{{route('admin.profile')}}" class="btn btn-xs btn-secondary btn-sm">View Profile</a> --}}
 												</div>
 											</div>
 										</li>

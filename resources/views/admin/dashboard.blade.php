@@ -59,7 +59,7 @@
                     <x-dashboard.stat-card icon="fas fa-hand-holding-usd" value="${{$dashboardData['totalDeposits']}} USD" label="Total Deposited" bg="success" />
                     <x-dashboard.stat-card icon="fas fa-clock" value="{{$dashboardData['pendingDeposits']}}" label="Pending Deposits" bg="warning" />
                     <x-dashboard.stat-card icon="fas fa-times-circle" value="{{$dashboardData['rejectedDeposits']}}" label="Rejected Deposits" bg="danger" />
-                    <x-dashboard.stat-card icon="fas fa-percent" value="$0.00 USD" label="Deposited Charge" bg="secondary" />
+                    <x-dashboard.stat-card icon="fas fa-hand-holding-usd" value="${{$dashboardData['todayDeposits']}}" label="Today Deposited" bg="secondary" />
                 </div>
             </div>
         </div>

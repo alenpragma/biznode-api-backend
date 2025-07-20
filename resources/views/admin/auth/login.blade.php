@@ -99,7 +99,7 @@
 <body>
 <div class="login-wrapper">
     <div class="logo">
-        <img src="https://yeldo-front-puce.vercel.app/_next/static/media/logo.beb988fc.png" alt="Logo">
+        <img src="{{ asset('storage/' . $generalSettings->logo) }}" alt="Logo">
     </div>
     <h2>Admin Login</h2>
 

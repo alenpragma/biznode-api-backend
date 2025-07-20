@@ -25,6 +25,7 @@ class AdminDashboardController extends Controller
                 'totalDeposits' => Transactions::where('remark', 'deposit')->where('status', 'Completed')->count(),
                 'rejectedDeposits' => Transactions::where('remark', 'deposit')->where('status', 'rejected')->count(),
                 'pendingDeposits' => Transactions::where('remark', 'deposit')->where('status', 'pending')->count(),
+                'todayDeposits' => Transactions::where('remark', 'deposit')->where('status', 'Completed')->whereDate('created_at', today())->count(),
 
                 // withdrawal
                 'totalWithdrawals' => Transactions::where('remark', 'withdrawal')->where('status', 'Completed')->sum('amount'),

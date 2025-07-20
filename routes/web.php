@@ -1,19 +1,20 @@
 <?php
 
-use App\Http\Controllers\admin\AdminDashboardController;
-use App\Http\Controllers\admin\DepositController;
-use App\Http\Controllers\admin\KycController;
-use App\Http\Controllers\admin\PlansController;
-use App\Http\Controllers\admin\ReferralsSettingsController;
-use App\Http\Controllers\admin\TransactionsController;
-use App\Http\Controllers\admin\UsersController;
-use App\Http\Controllers\admin\WithdrawController;
-use App\Http\Controllers\admin\WithdrawSettingsController;
-
-use App\Http\Controllers\api\UserController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CronController;
 use App\Http\Controllers\HolidayController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\api\UserController;
+use App\Http\Controllers\admin\KycController;
+use App\Http\Controllers\admin\PlansController;
+use App\Http\Controllers\admin\UsersController;
+use App\Http\Controllers\admin\DepositController;
+use App\Http\Controllers\admin\WithdrawController;
+
+use App\Http\Controllers\admin\TransactionsController;
+use App\Http\Controllers\admin\AdminDashboardController;
+use App\Http\Controllers\Admin\GeneralSettingsController;
+use App\Http\Controllers\admin\WithdrawSettingsController;
+use App\Http\Controllers\admin\ReferralsSettingsController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -53,6 +54,12 @@ Route::middleware('auth')->group(function () {
 
     //deposit
     Route::resource('/deposit', DepositController::class);
+
+    // general Settings
+
+    Route::get('general-settings', [GeneralSettingsController::class, 'index'])->name('admin.general.settings');
+    Route::post('general-settings', [GeneralSettingsController::class, 'update'])->name('admin.general.settings.update');
+
 });
 
 require __DIR__.'/auth.php';
