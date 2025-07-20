@@ -12,7 +12,7 @@ use App\Http\Controllers\admin\WithdrawController;
 
 use App\Http\Controllers\admin\TransactionsController;
 use App\Http\Controllers\admin\AdminDashboardController;
-use App\Http\Controllers\Admin\GeneralSettingsController;
+use App\Http\Controllers\admin\GeneralSettingsController;
 use App\Http\Controllers\admin\WithdrawSettingsController;
 use App\Http\Controllers\admin\ReferralsSettingsController;
 
