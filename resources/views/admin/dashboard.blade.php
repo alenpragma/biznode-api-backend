@@ -56,10 +56,10 @@
             <div class="card-body">
                 <h5 class="card-title fw-bold mb-4">Deposits</h5>
                 <div class="row g-4">
-                    <x-dashboard.stat-card icon="fas fa-hand-holding-usd" value="${{$dashboardData['totalDeposits']}} USD" label="Total Deposited" bg="success" />
-                    <x-dashboard.stat-card icon="fas fa-clock" value="{{$dashboardData['pendingDeposits']}}" label="Pending Deposits" bg="warning" />
-                    <x-dashboard.stat-card icon="fas fa-times-circle" value="{{$dashboardData['rejectedDeposits']}}" label="Rejected Deposits" bg="danger" />
-                    <x-dashboard.stat-card icon="fas fa-hand-holding-usd" value="${{$dashboardData['todayDeposits']}}" label="Today Deposited" bg="secondary" />
+                    <x-dashboard.stat-card icon="fas fa-hand-holding-usd" value="${{ number_format($dashboardData['totalDeposits'], 2) }}" label="Total Deposits" bg="success" />
+                    <x-dashboard.stat-card icon="fas fa-hand-holding-usd" value="${{ number_format($dashboardData['todayDeposits'], 2) }}" label="Today Deposits" bg="warning" />
+                    <x-dashboard.stat-card icon="fas fa-hand-holding-usd" value="${{ number_format($dashboardData['last7DaysDeposits'], 2) }}" label="Last 7 Days Deposits" bg="info" />
+                    <x-dashboard.stat-card icon="fas fa-hand-holding-usd" value="${{ number_format($dashboardData['last30DaysDeposits'], 2) }}" label="Last 30 days Deposits" bg="secondary" />
                 </div>
             </div>
         </div>
