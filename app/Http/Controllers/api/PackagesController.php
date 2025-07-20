@@ -165,7 +165,8 @@ class PackagesController extends Controller
             ->select('investors.*', 'package.interest_rate')
             ->paginate(10);
         $investorData->getCollection()->transform(function ($item) {
-            $item->daily_roi = ($item->interest_rate * $item->investment) / 100;
+            //dd($item);
+            $item->daily_roi = ($item->investment * $item->interest_rate/100) / 0.02;
             return $item;
         });
         return response()->json([
