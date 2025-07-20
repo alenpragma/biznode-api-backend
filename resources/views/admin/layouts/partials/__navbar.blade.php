@@ -22,7 +22,7 @@
 							<li class="nav-item topbar-user dropdown hidden-caret">
 								<a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
 									<div class="avatar-sm">
-										<img src="{{ asset('public/storage/' . $generalSettings->favicon) }}" alt="..." class="avatar-img rounded-circle">
+										<img src="{{ asset('storage/' . $generalSettings->favicon) }}" alt="..." class="avatar-img rounded-circle">
 									</div>
 									<span class="profile-username">
 										<span class="op-7">Hi,</span> <span class="fw-bold">{{ auth()->user()->name ?? "not fpund" }}</span>

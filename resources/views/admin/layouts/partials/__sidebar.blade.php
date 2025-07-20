@@ -5,7 +5,7 @@
         <!-- Logo Header -->
         <div class="logo-header" data-background-color="dark">
             <a href="/admin/dashboard" class="logo">
-                <img src="{{ asset('public/storage/' . $generalSettings->logo) }}" alt="App Name" class="navbar-brand" height="50">
+                <img src="{{ asset('storage/' . $generalSettings->logo) }}" alt="App Name" class="navbar-brand" height="50">
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
