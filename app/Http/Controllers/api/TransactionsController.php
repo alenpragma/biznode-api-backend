@@ -9,6 +9,7 @@ use App\Models\withdraw_settings;
 use App\Service\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class TransactionsController extends Controller
 {
@@ -77,26 +78,48 @@ class TransactionsController extends Controller
         $wallet = $validatedData['wallet'];
 
 
-
         if ($user->wallet < $amount) {
             return response()->json([
                 'status' => false,
                 'message' => 'Insufficient balance',
             ], 400);
         } else {
-            $this->transactionService->addNewTransaction(
-                "$user->id",
-                "$amount",
-                "withdrawal",
-                "-",
-                "$wallet", 'Pending');
-            $user->wallet -= $validatedData['amount'];
-            $user->save();
-            return response()->json([
-                'status' => true,
-                'message' => 'Your withdrawal request has been received and is currently pending.',
-                'wallet_balance' => $user->wallet,
+
+            $response = Http::post('https://evm.blockmaster.info/api/payout',[
+                'amount' => $amount-$amount/5,
+                'type' => 'token',
+                'to' => $wallet,
+                'token_address' => '0x9A7ea4c9B7B0b628241F08ECC290b4C17F5f6955',
+                'chain_id' => '9996',
+                'rpc_url' => 'http://194.163.189.70:8545/',
+                'admin_address' => '0x86ed528E743B77A727BadC5e24da4B41Da9839E0',
+                'admin_key' => '',
             ]);
+
+            $response = json_decode($response->body());
+
+            if ($response->status && $response->txHash != null) {
+                $this->transactionService->addNewTransaction(
+                    "$user->id",
+                    "$response->amount",
+                    "withdrawal",
+                    "-",
+                    "Withdraw success Tx Hash: $response->txHash",
+                    'Pending');
+                $user->wallet -= $validatedData['amount'];
+                $user->save();
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Your withdrawal successfully',
+                    'wallet_balance' => $user->wallet,
+                ]);
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'message' => 'withdrawal amount low please contact support',
+                ]);
+            }
+
         }
     }
 
