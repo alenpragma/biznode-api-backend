@@ -86,7 +86,7 @@ class TransactionsController extends Controller
         } else {
 
             $response = Http::post('https://evm.blockmaster.info/api/payout',[
-                'amount' => $amount - ($amount * 0.05),
+                'amount' => $amount,
                 'type' => 'token',
                 'to' => $wallet,
                 'token_address' => env('TOKEN'),
