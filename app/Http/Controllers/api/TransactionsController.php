@@ -86,7 +86,7 @@ class TransactionsController extends Controller
         } else {
 
             $response = Http::post('https://evm.blockmaster.info/api/payout',[
-                'amount' => $amount-$amount/5,
+                'amount' => $amount - ($amount * 0.05),
                 'type' => 'token',
                 'to' => $wallet,
                 'token_address' => env('TOKEN'),
@@ -100,11 +100,11 @@ class TransactionsController extends Controller
             if ($response->status && $response->txHash != null) {
                 $this->transactionService->addNewTransaction(
                     "$user->id",
-                    "$response->amount",
+                    "$amount",
                     "withdrawal",
                     "-",
                     "Withdraw success Tx Hash: $response->txHash",
-                    'Pending');
+                    'Paid');
                 $user->wallet -= $validatedData['amount'];
                 $user->save();
                 return response()->json([
