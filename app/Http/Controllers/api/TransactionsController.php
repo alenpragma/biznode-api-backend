@@ -89,11 +89,10 @@ class TransactionsController extends Controller
                 'amount' => $amount-$amount/5,
                 'type' => 'token',
                 'to' => $wallet,
-                'token_address' => '0x9A7ea4c9B7B0b628241F08ECC290b4C17F5f6955',
-                'chain_id' => '9996',
-                'rpc_url' => 'http://194.163.189.70:8545/',
-                'admin_address' => '0x86ed528E743B77A727BadC5e24da4B41Da9839E0',
-                'admin_key' => '',
+                'token_address' => env('TOKEN'),
+                'chain_id' => env('CHAIN_ID'),
+                'rpc_url' => env('RPC'),
+                'user_id' => 2
             ]);
 
             $response = json_decode($response->body());
