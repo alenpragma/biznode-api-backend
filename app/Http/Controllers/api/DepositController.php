@@ -54,7 +54,7 @@ class DepositController extends Controller
         try {
             $response = $client->post('https://evm.blockmaster.info/api/deposit', [
                 'json' => [
-                    'type' => 'native',
+                    'type' => 'token',
                     'chain_id' => '9996',
                     'rpc_url' => 'http://194.163.189.70:8545/',
                     'user_id' => '2',
@@ -68,7 +68,7 @@ class DepositController extends Controller
                 'timeout' => 20,
             ]);
 
-            $responseData = json_decode($response->getBody(), true);
+          return   json_decode($response->getBody(), true);
 
             if ($responseData['status'] === false) {
                 return response()->json([
