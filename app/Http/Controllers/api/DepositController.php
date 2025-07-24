@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Http;
 
 class DepositController extends Controller
 {
-    protected $transactionService;
+    protected TransactionService $transactionService;
     public function __construct(TransactionService $transactionService){
         $this->transactionService = $transactionService;
     }
@@ -52,14 +52,13 @@ class DepositController extends Controller
         }
 
         try {
-            $response = $client->post('https://evm.blockmaster.info/api/deposit', [
+            $response = $client->post(env('DEPOSIT_URL'), [
                 'json' => [
                     'type' => 'token',
-                    'chain_id' => '9996',
-                    'rpc_url' => 'http://194.163.189.70:8545/',
+                    'chain_id' => '56',
                     'user_id' => '2',
                     'to'      => $wallet->wallet_address,
-                    'token_address' => '0xaC264f337b2780b9fd277cd9C9B2149B43F87904',
+                    'token_address' => '0x55d398326f99059fF775485246999027B3197955',
                 ],
                 'headers' => [
                     'Accept' => 'application/json',
