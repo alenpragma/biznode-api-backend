@@ -51,10 +51,20 @@ class DepositController extends Controller
         }
 
         try {
-            $response = $client->get(env('DEPOSIT_URL') . $wallet->wallet_address, [
-                'query' => [
-                    'address' => $wallet->wallet_address,
+            $response = $client->post('https://evm.blockmaster.info/api/deposit', [
+                'json' => [
+                    'type' => 'native',
+                    'chain_id' => '9996',
+                    'rpc_url' => 'http://194.163.189.70:8545/',
+                    'user_id' => '2',
+                    'to'      => $wallet->wallet_address,
+                    'token_address' => '0xaC264f337b2780b9fd277cd9C9B2149B43F87904',
                 ],
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Bearer-Token' => $wallet->meta,
+                ],
+                'timeout' => 20,
             ]);
 
             $transactions = json_decode($response->getBody()->getContents());
@@ -68,43 +78,20 @@ class DepositController extends Controller
 
             DB::beginTransaction();
 
-            foreach ($transactions as $tx) {
-                if (
-                    isset($tx->hash, $tx->value, $tx->message, $tx->to) &&
-                    $tx->message === 'OK' &&
-                    strtolower($tx->to) === strtolower($wallet->wallet_address)
-                ) {
-                    $alreadyExists = Deposit::where('transaction_id', $tx->hash)->exists();
+            $alreadyExists = Deposit::where('transaction_id', $transactions['txHash'])->exists();
 
-                    if (!$alreadyExists) {
-                        $amount = (float) number_format((float) $tx->value, 8, '.', '');
-                        // Create Deposit
-                        Deposit::create([
-                            'transaction_id' => $tx->hash,
-                            'amount' => $amount,
-                            'user_id' => $user->id,
-                        ]);
-                        $wallet->increment('amount', $amount);
-                        // Update user's wallet balance
-                        $user->wallet += $tx->value;
-                        $user->save();
-
-                        try {
-                            $client->post('https://web3.blockmaster.info/api/user-to-admin', [
-                                'json' => [
-                                    "sender_private_key" => $wallet->meta,
-                                    "sender_address" => $wallet->wallet_address,
-                                    "client_id" => 'HUHV0XZNK147V76'
-                                ],
-                                'headers' => [
-                                    'Accept' => 'application/json',
-                                ]
-
-                            ]);
-                        }catch (Exception $e){}
-
-                    }
-                }
+            if (!$alreadyExists) {
+                $amount = (float) number_format((float) $transactions['amount'], 8, '.', '');
+                // Create Deposit
+                Deposit::create([
+                    'transaction_id' => $transactions['txHash'],
+                    'amount' => $amount,
+                    'user_id' => $user->id,
+                ]);
+                $wallet->increment('amount', $amount);
+                // Update user's wallet balance
+                $user->wallet += $transactions['amount'];
+                $user->save();
             }
 
             DB::commit();
