@@ -101,9 +101,9 @@ class CronController extends Controller
 
             if ($currentReferrer->is_active) {
                 if ($level === 1) {
-                    $bonus = ($baseAmount * 0.2) / 100; // 6% for level 1
+                    $bonus = ($baseAmount * 0.2) / 100; // 0.2% for level 1
                 } elseif ($level === 2) {
-                    $bonus = ($baseAmount * 0.1) / 100; // 2% for level 2
+                    $bonus = ($baseAmount * 0.1) / 100; // 0.1% for level 2
                 }
 
                 if ($bonus > 0) {

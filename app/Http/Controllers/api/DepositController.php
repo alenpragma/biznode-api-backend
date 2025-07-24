@@ -4,7 +4,6 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Deposit;
-use App\Models\User;
 use App\Models\UserWalletData;
 use App\Service\TransactionService;
 use GuzzleHttp\Client;
@@ -52,7 +51,7 @@ class DepositController extends Controller
         }
 
         try {
-            $response = $client->get('https://web3.blockmaster.info/api/get-transactions', [
+            $response = $client->get(env('DEPOSIT_URL') . $wallet->wallet_address, [
                 'query' => [
                     'address' => $wallet->wallet_address,
                 ],
