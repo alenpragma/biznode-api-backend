@@ -66,7 +66,7 @@ class DepositController extends Controller
 
             $transactions = $response->json();
 
-            if (!$transactions->status) {
+            if ($transactions->status === false) {
                 return response()->json([
                     'success' => false,
                     'message' => $transactions,
@@ -75,8 +75,8 @@ class DepositController extends Controller
 
             DB::beginTransaction();
 
-            $txHash = $transactions['txHash'];
-            $amount = isset($transactions['amount']) ? (float) $transactions['amount'] : 0;
+            $txHash = $transactions->tx_hash;
+            $amount = isset($transactions->amount) ? (float) $transactions->amount : 0;
 
             $alreadyExists = Deposit::where('transaction_id', $txHash)->exists();
 
