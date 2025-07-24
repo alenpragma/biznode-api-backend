@@ -10,7 +10,6 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
-use Illuminate\Support\Facades\Http;
 
 class DepositController extends Controller
 {
@@ -41,8 +40,9 @@ class DepositController extends Controller
         $client = new Client();
         $user = $request->user();
 
-        // Get user wallet address
-        $wallet = UserWalletData::where('user_id', $user->id)->select('wallet_address','meta')->first();
+        $wallet = UserWalletData::where('user_id', $user->id)
+            ->select('wallet_address', 'meta')
+            ->first();
 
         if (!$wallet || empty($wallet->wallet_address)) {
             return response()->json([
@@ -52,44 +52,48 @@ class DepositController extends Controller
         }
 
         try {
-            $response = Http::withHeaders([
-                'Accept' => 'application/json',
-                'Bearer-Token' => $wallet->meta,
-            ])
-                ->timeout(20)
-                ->post('https://evm.blockmaster.info/api/deposit', [
+            $response = $client->post('https://evm.blockmaster.info/api/deposit', [
+                'json' => [
                     'type' => 'native',
                     'chain_id' => '9996',
                     'rpc_url' => 'http://194.163.189.70:8545/',
-                    'user_id' => '2',
+                    'user_id' => $user->id,
                     'to' => $wallet->wallet_address,
                     'token_address' => '0xaC264f337b2780b9fd277cd9C9B2149B43F87904',
-                ]);
+                ],
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Bearer-Token' => $wallet->meta,
+                ],
+                'timeout' => 20,
+            ]);
 
-            $transactions = $response->json();
-            $hasData = $transactions->txHash;
-            if ($hasData == null) {
+            $transactions = json_decode($response->getBody(), true);
+
+            if (!isset($transactions['txHash'])) {
                 return response()->json([
                     'success' => false,
-                    'message' => $transactions
+                    'message' => $transactions,
                 ]);
             }
 
             DB::beginTransaction();
 
-            $alreadyExists = Deposit::where('transaction_id', $transactions->txHash)->exists();
+            $txHash = $transactions['txHash'];
+            $amount = isset($transactions['amount']) ? (float) $transactions['amount'] : 0;
+
+            $alreadyExists = Deposit::where('transaction_id', $txHash)->exists();
 
             if (!$alreadyExists) {
-                $amount = (float) number_format((float) $transactions->txHash, 8, '.', '');
-                // Create Deposit
                 Deposit::create([
-                    'transaction_id' => $transactions->txHash,
+                    'transaction_id' => $txHash,
                     'amount' => $amount,
                     'user_id' => $user->id,
                 ]);
+
                 $wallet->increment('amount', $amount);
-                // Update user's wallet balance
-                $user->wallet += $transactions['amount'];
+
+                $user->wallet += $amount;
                 $user->save();
             }
 
@@ -99,12 +103,8 @@ class DepositController extends Controller
                 'success' => true,
                 'message' => 'Deposit check completed successfully.',
             ]);
-
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
-
-            // Optional logging
-            // Log::error("Deposit check failed: " . $e->getMessage());
 
             return response()->json([
                 'success' => false,
