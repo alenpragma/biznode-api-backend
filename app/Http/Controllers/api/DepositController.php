@@ -68,9 +68,9 @@ class DepositController extends Controller
                 'timeout' => 20,
             ]);
 
-          return   json_decode($response->getBody(), true);
+            $responseData = json_decode($response->getBody(), true);
 
-            if ($responseData['status'] === false) {
+            if (!is_array($responseData)) {
                 return response()->json([
                     'success' => false,
                     'message' => $responseData,
