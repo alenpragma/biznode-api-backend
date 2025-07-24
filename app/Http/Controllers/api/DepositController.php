@@ -69,7 +69,7 @@ class DepositController extends Controller
 
             $transactions = json_decode($response->getBody()->getContents());
 
-            if (!isset($transactions['txHash'])){
+            if (!isset($transactions->txHash)){
                 return response()->json([
                     'success' => false,
                     'message' => 'no transaction found'
@@ -85,13 +85,13 @@ class DepositController extends Controller
 
             DB::beginTransaction();
 
-            $alreadyExists = Deposit::where('transaction_id', $transactions['txHash'])->exists();
+            $alreadyExists = Deposit::where('transaction_id', $transactions->txHash)->exists();
 
             if (!$alreadyExists) {
-                $amount = (float) number_format((float) $transactions['amount'], 8, '.', '');
+                $amount = (float) number_format((float) $transactions->txHash, 8, '.', '');
                 // Create Deposit
                 Deposit::create([
-                    'transaction_id' => $transactions['txHash'],
+                    'transaction_id' => $transactions->txHash,
                     'amount' => $amount,
                     'user_id' => $user->id,
                 ]);
