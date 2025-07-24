@@ -65,6 +65,7 @@ class DepositController extends Controller
                 ]);
 
             $transactions = $response->json();
+            dd($transactions);
 
             if ($transactions->status === false) {
                 return response()->json([
