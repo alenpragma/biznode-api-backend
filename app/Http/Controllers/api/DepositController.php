@@ -69,18 +69,25 @@ class DepositController extends Controller
             ]);
 
             $responseData = json_decode($response->getBody(), true);
-            return $responseData;
+
             if (!is_array($responseData)) {
                 return response()->json([
                     'success' => false,
-                    'message' => $responseData,
+                    'message' => 'Invalid response format',
+                ]);
+            }
+
+            if ($responseData['status'] === false) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $responseData['message'] ?? 'Unknown error',
                 ]);
             }
 
             DB::beginTransaction();
 
-            $txHash = $responseData['tx_hash'];
-            $amount = isset($transactions['amount']);
+            $txHash = $responseData['tx_hash'] ?? null;
+            $amount = $responseData['amount'] ?? null;
 
             $alreadyExists = Deposit::where('transaction_id', $txHash)->exists();
 
