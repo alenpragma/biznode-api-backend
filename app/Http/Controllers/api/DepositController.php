@@ -69,7 +69,7 @@ class DepositController extends Controller
             ]);
 
             $responseData = json_decode($response->getBody(), true);
-
+            return $responseData['status'];
             if (!is_array($responseData)) {
                 return response()->json([
                     'success' => false,
