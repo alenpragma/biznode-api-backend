@@ -52,31 +52,35 @@ class DepositController extends Controller
         }
 
         try {
-            $response = Http::withHeaders([
-                'Accept' => 'application/json',
-                'Bearer-Token' => $wallet->meta,
-            ])->post('https://evm.blockmaster.info/api/deposit',  [
-                    'type' => 'token',
+            $response = $client->post('https://evm.blockmaster.info/api/deposit', [
+                'json' => [
+                    'type' => 'native',
                     'chain_id' => '9996',
                     'rpc_url' => 'http://194.163.189.70:8545/',
                     'user_id' => '2',
-                    'to' => $wallet->wallet_address,
+                    'to'      => $wallet->user_address,
                     'token_address' => '0xaC264f337b2780b9fd277cd9C9B2149B43F87904',
-                ]);
+                ],
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Bearer-Token' => $wallet->meta,
+                ],
+                'timeout' => 20,
+            ]);
 
-            $transactions = $response->json();
+            $responseData = json_decode($response->getBody(), true);
 
-            if ($transactions->status === false) {
+            if ($responseData['status'] === false) {
                 return response()->json([
                     'success' => false,
-                    'message' => $transactions,
+                    'message' => $responseData,
                 ]);
             }
 
             DB::beginTransaction();
 
-            $txHash = $transactions->tx_hash;
-            $amount = isset($transactions->amount) ? (float) $transactions->amount : 0;
+            $txHash = $responseData['tx_hash'];
+            $amount = isset($transactions['amount']);
 
             $alreadyExists = Deposit::where('transaction_id', $txHash)->exists();
 
