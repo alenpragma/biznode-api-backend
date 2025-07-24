@@ -77,13 +77,6 @@ class DepositController extends Controller
                 ]);
             }
 
-            if (!is_array($transactions)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid response format from transaction API.',
-                ], 500);
-            }
-
             DB::beginTransaction();
 
             $alreadyExists = Deposit::where('transaction_id', $transactions->txHash)->exists();
