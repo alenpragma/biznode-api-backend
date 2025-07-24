@@ -145,15 +145,15 @@ class AuthController extends Controller
                 try {
                     $attempts++;
 
-                    $response = Http::timeout(10)->get('https://evm.blockmaster.info/api/create-wallet');
+                    $response = Http::timeout(10)->post('https://evm.blockmaster.info/api/create-wallet');
 
                     if ($response->successful()) {
                         $data = $response->json();
 
                         // Validation
-                        if (isset($data['address']) && isset($data['meta']) && !empty($data['address'])) {
+                        if (isset($data['address']) && isset($data['key']) && !empty($data['address'])) {
                             $wallet->wallet_address = $data['address'];
-                            $wallet->meta = $data['meta'];
+                            $wallet->meta = $data['key'];
                             $wallet->save();
 
                             Log::info("Wallet updated successfully for user_wallet_id: {$wallet->id}");
