@@ -88,6 +88,11 @@ class DepositController extends Controller
 
             $txHash = $responseData['tx_hash'] ?? null;
             $amount = $responseData['amount'] ?? null;
+            return [
+                $responseData['tx_hash'],
+                $amount = $responseData['amount']
+
+            ];
 
             $alreadyExists = Deposit::where('transaction_id', $txHash)->exists();
 
@@ -97,9 +102,6 @@ class DepositController extends Controller
                     'amount' => $amount,
                     'user_id' => $user->id,
                 ]);
-
-                $wallet->increment('amount', $amount);
-
                 $user->wallet += $amount;
                 $user->save();
             }
