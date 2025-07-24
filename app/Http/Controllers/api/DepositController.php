@@ -56,7 +56,7 @@ class DepositController extends Controller
                 'Accept' => 'application/json',
                 'Bearer-Token' => $wallet->meta,
             ])->post('https://evm.blockmaster.info/api/deposit',  [
-                    'type' => 'native',
+                    'type' => 'token',
                     'chain_id' => '9996',
                     'rpc_url' => 'http://194.163.189.70:8545/',
                     'user_id' => '2',
