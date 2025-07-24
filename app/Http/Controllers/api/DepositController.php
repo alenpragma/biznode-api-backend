@@ -67,12 +67,12 @@ class DepositController extends Controller
                 'timeout' => 20,
             ]);
 
-            $transactions = json_decode($response->getBody()->getContents());
+            $transactions = json_decode($response->getBody());
 
             if (!isset($transactions->txHash)){
                 return response()->json([
                     'success' => false,
-                    'message' => 'no transaction found'
+                    'message' => $transactions
                 ]);
             }
 
