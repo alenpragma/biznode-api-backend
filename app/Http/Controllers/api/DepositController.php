@@ -66,7 +66,7 @@ class DepositController extends Controller
 
             $transactions = $response->json();
 
-            if (empty($transactions->txHash)) {
+            if (!$transactions->status) {
                 return response()->json([
                     'success' => false,
                     'message' => $transactions,
