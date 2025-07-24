@@ -91,7 +91,7 @@ class DepositController extends Controller
 
             $alreadyExists = Deposit::where('transaction_id', $txHash)->exists();
 
-            if (!$alreadyExists) {
+            if (!$alreadyExists && $txHash !== null) {
                 Deposit::create([
                     'transaction_id' => $txHash,
                     'amount' => $amount,
