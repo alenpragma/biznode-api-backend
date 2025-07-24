@@ -52,21 +52,19 @@ class DepositController extends Controller
         }
 
         try {
-            $response = Http::post('https://evm.blockmaster.info/api/deposit', [
-                'json' => [
+            $response = Http::withHeaders([
+                'Accept' => 'application/json',
+                'Bearer-Token' => $wallet->meta,
+            ])
+                ->timeout(20)
+                ->post('https://evm.blockmaster.info/api/deposit', [
                     'type' => 'native',
                     'chain_id' => '9996',
                     'rpc_url' => 'http://194.163.189.70:8545/',
                     'user_id' => '2',
-                    'to'      => $wallet->wallet_address,
+                    'to' => $wallet->wallet_address,
                     'token_address' => '0xaC264f337b2780b9fd277cd9C9B2149B43F87904',
-                ],
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Bearer-Token' => $wallet->meta,
-                ],
-                'timeout' => 20,
-            ]);
+                ]);
 
             $transactions = $response->json();
 
