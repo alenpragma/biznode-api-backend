@@ -9,7 +9,7 @@ use App\Service\TransactionService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Exception;
+use Illuminate\Support\Facades\Http;
 
 class DepositController extends Controller
 {
@@ -52,25 +52,21 @@ class DepositController extends Controller
         }
 
         try {
-            $response = $client->post('https://evm.blockmaster.info/api/deposit', [
-                'json' => [
+            $response = Http::withHeaders([
+                'Accept' => 'application/json',
+                'Bearer-Token' => $wallet->meta,
+            ])->post('https://evm.blockmaster.info/api/deposit',  [
                     'type' => 'native',
                     'chain_id' => '9996',
                     'rpc_url' => 'http://194.163.189.70:8545/',
                     'user_id' => '2',
                     'to' => $wallet->wallet_address,
                     'token_address' => '0xaC264f337b2780b9fd277cd9C9B2149B43F87904',
-                ],
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Bearer-Token' => $wallet->meta,
-                ],
-                'timeout' => 20,
-            ]);
+                ]);
 
-            $transactions = json_decode($response->getBody(), true);
+            $transactions = $response->json();
 
-            if (!isset($transactions['txHash'])) {
+            if (empty($transactions->txHash)) {
                 return response()->json([
                     'success' => false,
                     'message' => $transactions,
