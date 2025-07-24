@@ -69,6 +69,13 @@ class DepositController extends Controller
 
             $transactions = json_decode($response->getBody()->getContents());
 
+            if (!isset($transactions['txHash'])){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'no transaction found'
+                ]);
+            }
+
             if (!is_array($transactions)) {
                 return response()->json([
                     'success' => false,
