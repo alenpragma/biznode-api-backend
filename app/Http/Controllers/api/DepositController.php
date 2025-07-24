@@ -58,6 +58,7 @@ class DepositController extends Controller
                     'chain_id' => '56',
                     'user_id' => '2',
                     'to'      => $wallet->wallet_address,
+                    'rpc_url' => 'https://bsc.publicnode.com',
                     'token_address' => '0x55d398326f99059fF775485246999027B3197955',
                 ],
                 'headers' => [
