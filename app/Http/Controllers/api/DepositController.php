@@ -86,13 +86,8 @@ class DepositController extends Controller
 
             DB::beginTransaction();
 
-            $txHash = $responseData['tx_hash'] ?? null;
+            $txHash = $responseData['txHash'] ?? null;
             $amount = $responseData['amount'] ?? null;
-            return [
-                $responseData['tx_hash'],
-                $amount = $responseData['amount']
-
-            ];
 
             $alreadyExists = Deposit::where('transaction_id', $txHash)->exists();
 
