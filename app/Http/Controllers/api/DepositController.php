@@ -58,7 +58,7 @@ class DepositController extends Controller
                     'chain_id' => '9996',
                     'rpc_url' => 'http://194.163.189.70:8545/',
                     'user_id' => '2',
-                    'to'      => $wallet->user_address,
+                    'to'      => $wallet->wallet_address,
                     'token_address' => '0xaC264f337b2780b9fd277cd9C9B2149B43F87904',
                 ],
                 'headers' => [
