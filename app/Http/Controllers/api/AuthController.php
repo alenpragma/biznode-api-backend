@@ -149,7 +149,7 @@ class AuthController extends Controller
 
                     if ($response->successful()) {
                         $data = $response->json();
-
+                        dd($data);
                         // Validation
                         if (isset($data['address']) && isset($data['key']) && !empty($data['address'])) {
                             $wallet->wallet_address = $data['address'];
