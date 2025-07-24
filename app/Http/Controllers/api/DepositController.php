@@ -67,6 +67,13 @@ class DepositController extends Controller
                 ]);
 
             $transactions = $response->json();
+            $hasData = $transactions->txHash;
+            if ($hasData == null) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $transactions
+                ]);
+            }
 
             DB::beginTransaction();
 
