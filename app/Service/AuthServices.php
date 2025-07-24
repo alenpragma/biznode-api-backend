@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -94,17 +95,11 @@ class AuthServices
             }
 
             // External API call to generate wallet
-            $client = new Client();
-            $apiResponse = $client->request('POST', 'https://web3.blockmaster.info/api/create-address', [
-                'form_params' => [
-                    'uid' => $request->input('name'),
-                ],
-                'timeout' => 10,
-            ]);
+            $response = Http::post('https://evm.blockmaster.info/api/create-wallet');
 
-            $walletData = json_decode($apiResponse->getBody(), true);
+            $walletData = $response->json();
 
-            if (!isset($walletData['privateKey']) || !isset($walletData['address'])) {
+            if (!isset($walletData['address']) || !isset($walletData['key'])) {
                 throw new \Exception("Invalid response from wallet service.");
             }
 
@@ -120,7 +115,7 @@ class AuthServices
             // Store wallet
             UserWalletData::create([
                 'user_id'        => $user->id,
-                'meta'           => $walletData['privateKey'],
+                'meta'           => $walletData['key'],
                 'wallet_address' => $walletData['address'],
                 'currency'       => 'USD',
             ]);
