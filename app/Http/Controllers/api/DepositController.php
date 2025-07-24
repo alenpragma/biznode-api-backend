@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\Http;
 
 class DepositController extends Controller
 {
@@ -51,7 +52,7 @@ class DepositController extends Controller
         }
 
         try {
-            $response = $client->post('https://evm.blockmaster.info/api/deposit', [
+            $response = Http::post('https://evm.blockmaster.info/api/deposit', [
                 'json' => [
                     'type' => 'native',
                     'chain_id' => '9996',
@@ -67,7 +68,7 @@ class DepositController extends Controller
                 'timeout' => 20,
             ]);
 
-            $transactions = json_decode($response->getBody());
+            $transactions = $response->json();
 
             if (!isset($transactions->txHash)){
                 return response()->json([
