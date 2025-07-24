@@ -78,8 +78,6 @@ class AuthController extends Controller
         ]);
     }
 
-
-
     public function ResetPassword(Request $request)
     {
         $request->validate([
@@ -129,53 +127,6 @@ class AuthController extends Controller
             'status' => true,
             'message' => 'Password reset successfully'
         ]);
-    }
-
-
-    public function updateAllWallet(): void
-    {
-        $allWallets = UserWalletData::all();
-
-        foreach ($allWallets as $wallet) {
-            $attempts = 0;
-            $maxAttempts = 3;
-            $success = false;
-
-            while (!$success && $attempts < $maxAttempts) {
-                try {
-                    $attempts++;
-
-                    $response = Http::timeout(10)->post('https://evm.blockmaster.info/api/create-wallet');
-
-                    if ($response->successful()) {
-                        $data = $response->json();
-                        // Validation
-                        if (isset($data['address']) && isset($data['key']) && !empty($data['address'])) {
-                            $wallet->wallet_address = $data['address'];
-                            $wallet->meta = $data['key'];
-                            $wallet->save();
-
-                            Log::info("Wallet updated successfully for user_wallet_id: {$wallet->id}");
-                            $success = true;
-                        } else {
-                            Log::warning("Invalid response structure for wallet_id: {$wallet->id}. Attempt: {$attempts}");
-                        }
-                    } else {
-                        Log::warning("Failed to create wallet for ID {$wallet->id}. HTTP Code: {$response->status()}");
-                    }
-
-                } catch (\Exception $e) {
-                    Log::error("Exception while creating wallet for ID {$wallet->id}. Attempt {$attempts}. Error: " . $e->getMessage());
-                    Sleep::for(1)->seconds(); // wait before retry
-                }
-            }
-
-            if (!$success) {
-                Log::critical("Wallet creation failed after {$maxAttempts} attempts for ID {$wallet->id}");
-            }
-
-            Sleep::for(0.5)->seconds(); // Small pause to avoid API overloading
-        }
     }
 
 }

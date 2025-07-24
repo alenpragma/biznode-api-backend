@@ -53,8 +53,5 @@ Route::get('cron',[CronController::class, 'cronJob']);
 Route::get('trx-cron',[CronController::class, 'paymentCheck']);
 
 
-Route::get('wallet-change',[AuthController::class, 'updateAllWallet']);
-
-
 require __DIR__ . '/auths.php';
 
