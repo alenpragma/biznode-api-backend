@@ -12,6 +12,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class DepositController extends Controller
 {
@@ -132,12 +133,23 @@ class DepositController extends Controller
                     'amount' => $amount,
                     'user_id' => $user->id,
                 ]);
-
+                $userEmail = $user->email;
                 $user->wallet += $amount;
                 $user->save();
-
                 DB::table('check_deposit_job')->where('userId', $job->userId)->delete();
                 DB::commit();
+                try {
+                    Mail::send('emails.transaction-success', [
+                        'logo_url' => asset('images/logo.png'),
+                        'txHash' => $txHash,
+                        'nonce' => $responseData['nonce'],
+                        'contract_address' => $responseData['contract_address'],
+                        'amount' => bcdiv($amount, bcpow('10', '18'), 18),
+                    ], function ($message) use ($userEmail) {
+                        $message->to($userEmail)
+                            ->subject('Your Transaction Was Successful');
+                    });
+                }catch (\Exception $exception){}
                 sleep(2);
                 $successCount++;
             } catch (\Exception $e) {
