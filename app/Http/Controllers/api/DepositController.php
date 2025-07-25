@@ -25,7 +25,7 @@ class DepositController extends Controller
         $user = $request->user();
         $wallet = UserWalletData::where('user_id', $user->id)->select('wallet_address')->first();
         if($wallet){
-           $checkJob = DB::table('check_deposit_job')->where('userId', $user->id)->where('job_status', 1)->first();
+           $checkJob = DB::table('check_deposit_job')->where('userId', $user->id)->first();
            if(!$checkJob){
                DB::table('check_deposit_job')->insert([
                    'userId' => $user->id,
