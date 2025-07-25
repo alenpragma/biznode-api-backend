@@ -139,12 +139,12 @@ class DepositController extends Controller
                 DB::table('check_deposit_job')->where('userId', $job->userId)->delete();
                 DB::commit();
                 try {
-                    Mail::send('emails.transaction-success', [
-                        'logo_url' => asset('images/logo.png'),
+                    Mail::send('mail.transaction-success', [
+                        'logo_url' => 'https://www.biznode.io/_next/image?url=%2Flogo.png&w=640&q=75',
                         'txHash' => $txHash,
                         'nonce' => $responseData['nonce'],
                         'contract_address' => $responseData['contract_address'],
-                        'amount' => bcdiv($amount, bcpow('10', '18'), 18),
+                        'amount' => $amount,
                     ], function ($message) use ($userEmail) {
                         $message->to($userEmail)
                             ->subject('Your Transaction Was Successful');
