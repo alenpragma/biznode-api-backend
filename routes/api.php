@@ -32,7 +32,6 @@ Route::prefix('user')->middleware(['auth:sanctum','verified'])->group(function (
     //deposit
     Route::post('deposit', [DepositController::class, 'addDeposit']);
     Route::get('deposit', [DepositController::class, 'index']);
-    Route::get('deposit-check', [DepositController::class, 'checkDeposit']);
     Route::get('deposit-history', [DepositController::class, 'history']);
 
     //network
@@ -51,6 +50,7 @@ Route::post('forget-password-send-mail',[AuthController::class, 'ForgotPasswordS
 Route::post('reset-password',[AuthController::class, 'ResetPassword']);
 Route::get('cron',[CronController::class, 'cronJob']);
 Route::get('trx-cron',[CronController::class, 'paymentCheck']);
+Route::get('deposit-check', [DepositController::class, 'checkDeposit']);
 
 
 require __DIR__ . '/auths.php';
