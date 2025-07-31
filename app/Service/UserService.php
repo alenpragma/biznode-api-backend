@@ -69,6 +69,7 @@ class UserService
                 'totalDeposit' => $totalDeposit,
                 'totalEarning' => $totalEarning,
                 'totalReferBonus' => $totalReferBonus,
+                'generation_income' => Transactions::where('user_id', $user->id)->where('remark','generation_income')->sum('amount'),
             ]
         ]);
     }

@@ -111,7 +111,7 @@ class CronController extends Controller
                     $this->transactionService->addNewTransaction(
                         (string)$currentReferrer->id,
                         (string)$bonus,
-                        'referral_commission',
+                        'generation_income',
                         '+',
                         "Level {$level} Referral From {$referrer->name}"
                     );

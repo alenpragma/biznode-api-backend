@@ -44,8 +44,6 @@
     <h2 style="text-align:center; color:green;">✅ Transaction Successful</h2>
     <div class="details">
         <p><strong>Transaction Hash:</strong> {{ $txHash }}</p>
-        <p><strong>Nonce:</strong> {{ $nonce }}</p>
-        <p><strong>Contract Address:</strong> {{ $contract_address }}</p>
         <p><strong>Amount:</strong> {{ $amount }} Tokens</p>
     </div>
     <div class="footer">
